@@ -16,6 +16,7 @@ import FeaturePage from 'containers/FeaturePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import Information from 'containers/Update/Information';
 
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
@@ -39,6 +40,7 @@ export default function App() {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/features" component={FeaturePage} />
+        <Route path="/information" component={Information} /> 
         <Route path="" component={NotFoundPage} />
       </Switch>
       <Footer />

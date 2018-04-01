@@ -175,6 +175,7 @@
       "express",
       "ip",
       "minimist",
+      "primereact",
       "sanitize.css"
     ],
     "include": [
@@ -226,8 +227,10 @@
     "ip": "1.1.5",
     "lodash": "4.17.4",
     "minimist": "1.2.0",
+    "primereact": "^1.5.0",
     "prop-types": "15.5.10",
     "react": "15.6.1",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "15.6.1",
     "react-helmet": "5.1.3",
     "react-intl": "2.3.0",
@@ -235,6 +238,7 @@
     "react-redux": "5.0.5",
     "react-router-dom": "4.1.1",
     "react-router-redux": "5.0.0-alpha.6",
+    "react-select": "^1.2.1",
     "redux": "3.6.0",
     "redux-immutable": "4.0.0",
     "redux-saga": "0.15.3",
