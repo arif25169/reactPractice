@@ -1,83 +1,154 @@
-/*
- * FeaturePage
- *
- * List all the features
- */
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
+import React, { Component } from 'react';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import {DataTable} from 'primereact/components/datatable/DataTable';
+import {Column} from 'primereact/components/column/Column';
+import {ColumnGroup} from 'primereact/components/columngroup/ColumnGroup';
+import {Row} from 'primereact/components/row/Row';
+import {Button} from 'primereact/components/button/Button';
+import jsPDF from "jspdf";
+import autotable from "jspdf-autotable";
+require('jspdf-autotable');
+var pdfConverter = require('jspdf');
 
-import H1 from 'components/H1';
-import messages from './messages';
-import List from './List';
-import ListItem from './ListItem';
-import ListItemTitle from './ListItemTitle';
+var getColumns = function () {
+  return [
+  {title: "Student", dataKey: "studentName"},
+  {title: "Gender", dataKey: "studentGender"}, 
+  {title: "Mother Name", dataKey: "motherName"},
+  {title: "Father Name", dataKey: "fatherName"} 
+]
+};
 
-export default class FeaturePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+var getData = function () {
+  return rows
+};
 
-  // Since state and props are static,
-  // there's no need to re-render this component
-  shouldComponentUpdate() {
-    return false;
-  }
+var rows;
 
-  render() {
-    return (
-      <div>
-        <Helmet>
-          <title>Feature Page</title>
-          <meta name="description" content="Feature page of React.js Boilerplate application" />
-        </Helmet>
-        <H1>
-          <FormattedMessage {...messages.header} />
-        </H1>
-        <List>
-          <ListItem>
-            <ListItemTitle>
-              <FormattedMessage {...messages.scaffoldingHeader} />
-            </ListItemTitle>
-            <p>
-              <FormattedMessage {...messages.scaffoldingMessage} />
-            </p>
-          </ListItem>
 
-          <ListItem>
-            <ListItemTitle>
-              <FormattedMessage {...messages.feedbackHeader} />
-            </ListItemTitle>
-            <p>
-              <FormattedMessage {...messages.feedbackMessage} />
-            </p>
-          </ListItem>
 
-          <ListItem>
-            <ListItemTitle>
-              <FormattedMessage {...messages.routingHeader} />
-            </ListItemTitle>
-            <p>
-              <FormattedMessage {...messages.routingMessage} />
-            </p>
-          </ListItem>
 
-          <ListItem>
-            <ListItemTitle>
-              <FormattedMessage {...messages.networkHeader} />
-            </ListItemTitle>
-            <p>
-              <FormattedMessage {...messages.networkMessage} />
-            </p>
-          </ListItem>
 
-          <ListItem>
-            <ListItemTitle>
-              <FormattedMessage {...messages.intlHeader} />
-            </ListItemTitle>
-            <p>
-              <FormattedMessage {...messages.intlMessage} />
-            </p>
-          </ListItem>
-        </List>
-      </div>
+class FeaturePage extends Component {
+    constructor() {
+        super();
+        this.exportpdf = this.exportpdf.bind(this);
+     
+        this.state = {
+          rif: [],
+          
+          sales: [
+            {
+              "studentId": "100122000116",
+              "customStudentId": "1510020",
+              "studentName": "Tasnim Tabassum",
+              "studentGender": "Female",
+              "studentDOB": "2012-07-27",
+              "studentReligion": "Islam",
+              "motherName": "শামসুন নাহার",
+              "fatherName": "Md. Mamunar Rashid"
+              
+            },
+            {
+              "studentId": "100122000216",
+              "customStudentId": "1510000",
+              "studentName": "Mst. Afia Sohana",
+              "studentGender": "Female",
+              "studentDOB": "2012-06-30",
+              "studentReligion": "Islam",
+              "motherName": "Mst. Fawalia Akter",
+              
+              "fatherName": "Md. Azaharul Islam"
+             
+            }
+            
+            ]
+        
+        };
+    }
+
+    componentDidMount() {
+      fetch("http://192.168.31.215:8080/student/list")
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Server don't load !");
+          }
+        })
+        .then(responseData => {
+          this.setState({ rif: responseData.item });
+        });
+    }
+    
+  exportpdf() {
+    let doc = new jsPDF("l","mm","a4");
+   
+    
+
+  
+    doc.autoTable(getColumns(), getData(10),
+      {
+     
+        theme: 'grid',
+        headerStyles: {
+          fillColor: [105,105,105],
+          overflow: 'linebreak',
+          //  fontSize: 8
+        },
+        styles: {
+          halign: 'center',
+          lineColor: [0, 0, 0],
+          fontSize: 8
+        },
+       
+        createdCell: function(cell, opts) {
+          cell.styles.cellPadding = 1;
+        },
+
+      },
+
     );
+
+
+    doc.save('Student Absent List.pdf');
+  }
+   
+   
+  
+render() {
+  rows=this.state.sales;
+    
+
+console.log(this.state.rif);
+
+    let content = '';
+    content = <div>
+    <div className='ui-g ui-fluid'>
+    <DataTable value={this.state.sales} paginator={true} rows={10}>
+        <Column field="studentName" header="Student" />
+        <Column field="studentGender" header="Gender" />
+        <Column field="motherName" header="Mother Name" />
+        <Column field="fatherName" header="Father Name" />
+    </DataTable>
+  <h4> kk </h4> 
+    </div>
+
+
+    </div>
+   
+    
+   
+  return (
+      <div>
+
+          <h3>Basic</h3>
+    {content}
+
+  <Button  onClick={this.exportpdf} className="exportPDF">Export to PDF</Button>
+          </div>
+  );
   }
 }
+
+export default FeaturePage; 
